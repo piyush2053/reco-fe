@@ -28,9 +28,7 @@ const Home = () => {
 
   if (!data)
     return (
-      <div className="text-white text-center mt-20 text-lg font-medium">
-        <Loader />
-      </div>
+      <Loader />
     );
 
   const summaryData = [
