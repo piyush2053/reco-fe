@@ -1,0 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body p,body span,body div{font-family: poppins;}
+
+.ringwheel{font-size: 8rem;}
+.team-names{font-size: 0.8rem;font-family: poppins;}
+.live-card-col .ant-card-body{padding: 0.8rem;}
+.upcoming-card-col .ant-card-body{padding: 0.8rem;}
+.place-bet-btn{font-size: 0.8rem;}
+.set-reminder-btn{font-size: 0.8rem;}
