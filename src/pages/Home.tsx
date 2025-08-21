@@ -190,30 +190,30 @@ const Home = () => {
                   <h4 className="w-fit text-gray-800 font-medium mb-2 bg-green-500 px-2 rounded-full flex items-center">
                     <CheckCircleOutlined className="text-gray-800 mr-2" /> Fulfilled Orders
                   </h4>
-                  {clientData.fulfilled.length > 0 ? (
+                  {clientData?.fulfilled.length > 0 ? (
                     <div className="overflow-x-auto">
-                   <table className="min-w-full divide-y divide-gray-700 text-left">
-  <thead>
-    <tr>
-      {orderFields.map((f, i) => (
-        <th key={i} className="px-6 py-3 text-gray-400 uppercase text-sm">
-          {f.label}
-        </th>
-      ))}
-    </tr>
-  </thead>
-  <tbody className="divide-y divide-gray-700">
-    {clientData.pending.map((o, i) => (
-      <tr key={i} className="hover:bg-gray-700">
-        {orderFields.map((f, j) => (
-          <td key={j} className="px-6 py-3">
-            {formatNumber(o?.[f.key]) || "-"}
-          </td>
-        ))}
-      </tr>
-    ))}
-  </tbody>
-</table>
+                      <table className="min-w-full divide-y divide-gray-700 text-left">
+                        <thead>
+                          <tr>
+                            {orderFields?.map((f, i) => (
+                              <th key={i} className="px-6 py-3 text-gray-400 uppercase text-sm">
+                                {f.label}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-700">
+                          {clientData.pending.map((o, i) => (
+                            <tr key={i} className="hover:bg-gray-700">
+                              {orderFields.map((f, j) => (
+                                <td key={j} className="px-6 py-3">
+                                  {formatNumber(o?.[f.key]) || "-"}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
 
                     </div>
                   ) : (
