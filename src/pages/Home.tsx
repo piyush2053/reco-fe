@@ -82,6 +82,19 @@ const Home = () => {
       (clients[client]?.city || "").toLowerCase() === selectedCity.toLowerCase();
     return matchesSearch && matchesCity;
   });
+  const orderFields = [
+    { key: "voucherNo", label: "Sales Order" },
+    { key: "orderReferenceNo", label: "Order Ref" },
+    { key: "quantity", label: "Qty" },
+    { key: "rate", label: "Rate" },
+    { key: "value", label: "Value" },
+    { key: "grossTotal", label: "Gross Total" },
+    { key: "sgstOutput", label: "SGST" },
+    { key: "cgstOutput", label: "CGST" },
+    { key: "igstOutput", label: "IGST" },
+    { key: "roundOff", label: "Round Off" },
+    { key: "specialDiscountOnGSTSale", label: "Special Discount" },
+  ];
 
   return (
     <div className="p-6 bg-gray-900 min-h-screen text-white">
@@ -148,9 +161,9 @@ const Home = () => {
                       <table className="min-w-full divide-y divide-gray-700 text-left">
                         <thead>
                           <tr>
-                            {["Sales Order", "Order Ref", "Qty", "Total"].map((head, i) => (
+                            {orderFields.map((f, i) => (
                               <th key={i} className="px-6 py-3 text-gray-400 uppercase text-sm">
-                                {head}
+                                {f.label}
                               </th>
                             ))}
                           </tr>
@@ -158,12 +171,11 @@ const Home = () => {
                         <tbody className="divide-y divide-gray-700">
                           {clientData.pending.map((o, i) => (
                             <tr key={i} className="hover:bg-gray-700">
-                              <td className="px-6 py-3">{o?.voucherNo || "-"}</td>
-                              <td className="px-6 py-3">{o?.orderReferenceNo || "-"}</td>
-                              <td className="px-6 py-3">{formatNumber(o?.quantity)}</td>
-                              <td className="px-6 py-3">
-                                {formatNumber(o?.grossTotal || o?.value)}
-                              </td>
+                              {orderFields.map((f, j) => (
+                                <td key={j} className="px-6 py-3">
+                                  {formatNumber(o?.[f.key]) || "-"}
+                                </td>
+                              ))}
                             </tr>
                           ))}
                         </tbody>
@@ -180,29 +192,29 @@ const Home = () => {
                   </h4>
                   {clientData.fulfilled.length > 0 ? (
                     <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-700 text-left">
-                        <thead>
-                          <tr>
-                            {["Sales Order", "Order Ref", "Qty", "Total"].map((head, i) => (
-                              <th key={i} className="px-6 py-3 text-gray-400 uppercase text-sm">
-                                {head}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-700">
-                          {clientData.fulfilled.map((o, i) => (
-                            <tr key={i} className="hover:bg-gray-700">
-                              <td className="px-6 py-3">{o?.voucherNo || "-"}</td>
-                              <td className="px-6 py-3">{o?.orderReferenceNo || "-"}</td>
-                              <td className="px-6 py-3">{formatNumber(o?.quantity)}</td>
-                              <td className="px-6 py-3">
-                                {formatNumber(o?.grossTotal || o?.value)}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                   <table className="min-w-full divide-y divide-gray-700 text-left">
+  <thead>
+    <tr>
+      {orderFields.map((f, i) => (
+        <th key={i} className="px-6 py-3 text-gray-400 uppercase text-sm">
+          {f.label}
+        </th>
+      ))}
+    </tr>
+  </thead>
+  <tbody className="divide-y divide-gray-700">
+    {clientData.pending.map((o, i) => (
+      <tr key={i} className="hover:bg-gray-700">
+        {orderFields.map((f, j) => (
+          <td key={j} className="px-6 py-3">
+            {formatNumber(o?.[f.key]) || "-"}
+          </td>
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>
+
                     </div>
                   ) : (
                     <p className="text-gray-500 text-sm">No fulfilled orders.</p>
