@@ -140,8 +140,8 @@ const Home = () => {
                 <p className="text-gray-400 text-sm mb-4">📍 {clientData.city || "Unknown"}</p>
 
                 <div className="mb-6">
-                  <h4 className="text-black px-2 font-medium mb-2 bg-yellow-500 rounded-full flex items-center">
-                    <ClockCircleOutlined className="text-black mr-2" /> Pending Orders
+                  <h4 className="w-fit text-gray-800 px-2 font-medium mb-2 bg-yellow-500 rounded-full flex items-center">
+                    <ClockCircleOutlined className="text-gray-800 mr-2" /> Pending Orders
                   </h4>
                   {clientData.pending.length > 0 ? (
                     <div className="overflow-x-auto">
@@ -175,8 +175,8 @@ const Home = () => {
                 </div>
 
                 <div>
-                  <h4 className="text-black font-medium mb-2 bg-green-500 px-2 rounded-full flex items-center">
-                    <CheckCircleOutlined className="text-black mr-2" /> Fulfilled Orders
+                  <h4 className="w-fit text-gray-800 font-medium mb-2 bg-green-500 px-2 rounded-full flex items-center">
+                    <CheckCircleOutlined className="text-gray-800 mr-2" /> Fulfilled Orders
                   </h4>
                   {clientData.fulfilled.length > 0 ? (
                     <div className="overflow-x-auto">
