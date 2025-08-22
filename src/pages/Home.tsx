@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { core_services } from "../utils/api";
 import Loader from "../components/Loader";
 import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { Progress } from "antd";
 
 const Home = () => {
   const [data, setData] = useState<any[]>([]);
@@ -95,6 +96,29 @@ const Home = () => {
     { key: "roundOff", label: "Round Off" },
     { key: "specialDiscountOnGSTSale", label: "Special Discount" },
   ];
+  const totalOrders = data.filter((v) => v?.voucherNo).length;
+  const totalPending = Object.values(clients).reduce(
+    (sum, c) => sum + c.pending.length,
+    0
+  );
+  const totalFulfilled = Object.values(clients).reduce(
+    (sum, c) => sum + c.fulfilled.length,
+    0
+  );
+  const totalAmount = data.reduce(
+    (sum, v) => sum + (v?.grossTotal || v?.value || 0),
+    0
+  );
+
+  const totalPendingAmount = Object.values(clients).reduce(
+    (sum, c) => sum + c.pending.reduce((s, o) => s + (o?.grossTotal || o?.value || 0), 0),
+    0
+  );
+
+  const totalFulfilledAmount = Object.values(clients).reduce(
+    (sum, c) => sum + c.fulfilled.reduce((s, o) => s + (o?.grossTotal || o?.value || 0), 0),
+    0
+  );
 
   return (
     <div className="p-6 bg-gray-900 min-h-screen text-white">
@@ -135,8 +159,31 @@ const Home = () => {
             <span className="text-2xl font-bold mt-2">{item.value}</span>
           </div>
         ))}
-      </div>
+        <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 p-5 rounded-xl shadow-lg flex flex-col w-full">
+          <span className="text-gray-400 uppercase text-sm">Orders Status</span>
+          <div className="mt-4">
+            <Progress
+              percent={totalAmount > 0 ? (totalFulfilledAmount / totalAmount) * 100 : 0}
+              success={{ percent: totalAmount > 0 ? (totalPendingAmount / totalAmount) * 100 : 0 }}
+              strokeColor={{ from: "#facc15", to: "#22c55e" }}
+              trailColor="#374151"
+              showInfo={false}
+            />
+            <div className="flex justify-between mt-2 text-sm">
+              <span className="text-yellow-400">
+                Pending: ₹{formatNumber(totalPendingAmount)} ({totalPending})
+              </span>
+              <span className="text-green-400">
+                Fulfilled: ₹{formatNumber(totalFulfilledAmount)} ({totalFulfilled})
+              </span>
+              <span className="text-gray-300">
+                Total: ₹{formatNumber(totalAmount)} ({totalOrders})
+              </span>
+            </div>
+          </div>
+        </div>
 
+      </div>
       <div className="space-y-6">
         <h2 className="text-xl font-bold text-gray-100 mb-2">Client Orders</h2>
 
@@ -203,7 +250,7 @@ const Home = () => {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-700">
-                          {clientData.pending.map((o, i) => (
+                          {clientData.fulfilled.map((o, i) => ( 
                             <tr key={i} className="hover:bg-gray-700">
                               {orderFields.map((f, j) => (
                                 <td key={j} className="px-6 py-3">
