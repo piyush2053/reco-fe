@@ -182,6 +182,49 @@ const Home = () => {
             </div>
           </div>
         </div>
+{/* Orders Status Block */}
+<div className="bg-gray-800 p-6 rounded-xl shadow-lg w-full">
+  <h2 className="text-lg font-semibold mb-4">Order Status</h2>
+
+  {/* Cards Pending & Fulfilled */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+    <div className="bg-gray-700 p-4 rounded-lg flex flex-col items-center">
+      <span className="text-gray-400 text-sm">Pending</span>
+      <span className="text-xl font-bold text-yellow-400 mt-1">
+        ₹{formatNumber(totalPendingAmount)}
+      </span>
+      <span className="text-sm text-yellow-400">({totalPending})</span>
+    </div>
+
+    <div className="bg-gray-700 p-4 rounded-lg flex flex-col items-center">
+      <span className="text-gray-400 text-sm">Fulfilled</span>
+      <span className="text-xl font-bold text-green-400 mt-1">
+        ₹{formatNumber(totalFulfilledAmount)}
+      </span>
+      <span className="text-sm text-green-400">({totalFulfilled})</span>
+    </div>
+  </div>
+
+  {/* Progress Bar */}
+  <div>
+    <span className="text-sm text-gray-300 mb-2 block">Fulfilled</span>
+    <Progress
+      percent={
+        totalAmount > 0
+          ? ((totalFulfilledAmount / totalAmount) * 100).toFixed(0)
+          : 0
+      }
+      strokeColor="#3b82f6"
+      trailColor="#374151"
+      showInfo={false}
+    />
+    <p className="text-sm text-gray-400 mt-1">
+      {totalAmount > 0
+        ? `${((totalFulfilledAmount / totalAmount) * 100).toFixed(0)}%`
+        : "0%"}
+    </p>
+  </div>
+</div>
 
       </div>
       <div className="space-y-6">
@@ -250,7 +293,7 @@ const Home = () => {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-700">
-                          {clientData.fulfilled.map((o, i) => ( 
+                          {clientData?.fulfilled.map((o, i) => ( 
                             <tr key={i} className="hover:bg-gray-700">
                               {orderFields.map((f, j) => (
                                 <td key={j} className="px-6 py-3">
