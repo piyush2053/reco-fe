@@ -2,12 +2,15 @@ import { useEffect, useState, useMemo } from "react";
 import { core_services } from "../utils/api";
 import Loader from "../components/Loader";
 import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
-import { Progress } from "antd";
-
+import { Progress, Switch } from "antd";
+import { Collapse } from "antd";
+// AntD ka Collapse use karenge
+const { Panel } = Collapse;
 const Home = () => {
   const [data, setData] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCity, setSelectedCity] = useState("All");
+  const [viewMode, setViewMode] = useState<"collapse" | "table">("collapse");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -119,6 +122,20 @@ const Home = () => {
     (sum, c) => sum + c.fulfilled.reduce((s, o) => s + (o?.grossTotal || o?.value || 0), 0),
     0
   );
+  const OrderCard = ({ order, fields }: { order: any; fields: any[] }) => {
+    return (
+      <div className="bg-gray-700 p-4 rounded-lg shadow-md mb-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          {fields.map((f, idx) => (
+            <div key={idx} className="text-sm text-gray-300">
+              <span className="font-semibold text-gray-100">{f.label}: </span>
+              {order?.[f.key] || "-"}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="p-6 bg-gray-900 min-h-screen text-white">
@@ -182,57 +199,132 @@ const Home = () => {
             </div>
           </div>
         </div>
-{/* Orders Status Block */}
-<div className="bg-gray-800 p-6 rounded-xl shadow-lg w-full">
-  <h2 className="text-lg font-semibold mb-4">Order Status</h2>
+        {/* Orders Status Block */}
+        <div className="bg-gray-800 p-6 rounded-xl shadow-lg w-full">
+          <h2 className="text-lg font-semibold mb-4">Order Status</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div className="bg-gray-700 p-4 rounded-lg flex flex-col items-center">
+              <span className="text-gray-400 text-sm">Pending</span>
+              <span className="text-xl font-bold text-yellow-400 mt-1">
+                ₹{formatNumber(totalPendingAmount)}
+              </span>
+              <span className="text-sm text-yellow-400">({totalPending})</span>
+            </div>
 
-  {/* Cards Pending & Fulfilled */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-    <div className="bg-gray-700 p-4 rounded-lg flex flex-col items-center">
-      <span className="text-gray-400 text-sm">Pending</span>
-      <span className="text-xl font-bold text-yellow-400 mt-1">
-        ₹{formatNumber(totalPendingAmount)}
-      </span>
-      <span className="text-sm text-yellow-400">({totalPending})</span>
-    </div>
+            <div className="bg-gray-700 p-4 rounded-lg flex flex-col items-center">
+              <span className="text-gray-400 text-sm">Fulfilled</span>
+              <span className="text-xl font-bold text-green-400 mt-1">
+                ₹{formatNumber(totalFulfilledAmount)}
+              </span>
+              <span className="text-sm text-green-400">({totalFulfilled})</span>
+            </div>
+          </div>
 
-    <div className="bg-gray-700 p-4 rounded-lg flex flex-col items-center">
-      <span className="text-gray-400 text-sm">Fulfilled</span>
-      <span className="text-xl font-bold text-green-400 mt-1">
-        ₹{formatNumber(totalFulfilledAmount)}
-      </span>
-      <span className="text-sm text-green-400">({totalFulfilled})</span>
-    </div>
-  </div>
-
-  {/* Progress Bar */}
-  <div>
-    <span className="text-sm text-gray-300 mb-2 block">Fulfilled</span>
-    <Progress
-      percent={
-        totalAmount > 0
-          ? ((totalFulfilledAmount / totalAmount) * 100).toFixed(0)
-          : 0
-      }
-      strokeColor="#3b82f6"
-      trailColor="#374151"
-      showInfo={false}
-    />
-    <p className="text-sm text-gray-400 mt-1">
-      {totalAmount > 0
-        ? `${((totalFulfilledAmount / totalAmount) * 100).toFixed(0)}%`
-        : "0%"}
-    </p>
-  </div>
-</div>
+          {/* Progress Bar */}
+          <div>
+            <span className="text-sm text-gray-300 mb-2 block">Fulfilled</span>
+            <Progress
+              percent={
+                totalAmount > 0
+                  ? ((totalFulfilledAmount / totalAmount) * 100).toFixed(0)
+                  : 0
+              }
+              strokeColor="#3b82f6"
+              trailColor="#374151"
+              showInfo={false}
+            />
+            <p className="text-sm text-gray-400 mt-1">
+              {totalAmount > 0
+                ? `${((totalFulfilledAmount / totalAmount) * 100).toFixed(0)}%`
+                : "0%"}
+            </p>
+          </div>
+        </div>
 
       </div>
       <div className="space-y-6">
         <h2 className="text-xl font-bold text-gray-100 mb-2">Client Orders</h2>
+        <div className="flex items-center gap-3 mb-4 rounded-full px-2 bg-white w-fit py-1">
+          <span className="text-gray-800 text-sm">Card View</span>
+          <Switch
+            defaultChecked={false}
+            onChange={(checked) => setViewMode(checked ? "table" : "collapse")}
+          />
+          <span className="text-gray-800 text-sm">Table View</span>
+        </div>
 
         {filteredClients.length === 0 ? (
           <p className="text-gray-500">No clients found.</p>
+        ) : viewMode === "collapse" ? (
+          // ---------- Collapsible View ----------
+          <Collapse
+            accordion
+            ghost
+            expandIcon={({ isActive }) => (
+              <svg
+                className={`w-4 h-4 transform transition-transform ${isActive ? "rotate-90" : ""
+                  } text-white`}
+                fill="none"
+                stroke="white"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={3}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            )}
+            className="bg-gray-800 rounded-xl"
+          >
+            {filteredClients.map((client, idx) => {
+              const clientData = clients[client];
+              if (!clientData) return null;
+
+              return (
+                <Panel
+                  header={
+                    <div className="flex justify-between items-center bg-gray-800 text-white">
+                      <h3 className="text-lg text-white font-semibold">{client}</h3>
+                      <span className="text-gray-400 text-sm">
+                        📍 {clientData.city || "Unknown"}
+                      </span>
+                    </div>
+                  }
+                  key={idx}
+                >
+                  <div className="mb-6">
+                    <h4 className="text-yellow-400 font-medium mb-2">
+                      Pending Orders ({clientData.pending.length})
+                    </h4>
+                    {clientData.pending.length > 0 ? (
+                      clientData.pending.map((o, i) => (
+                        <OrderCard order={o} fields={orderFields} />
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-sm">No pending orders.</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h4 className="text-green-400 font-medium mb-2">
+                      Fulfilled Orders ({clientData.fulfilled.length})
+                    </h4>
+                    {clientData.fulfilled.length > 0 ? (
+                      clientData.fulfilled.map((o, i) => (
+                        <OrderCard order={o} fields={orderFields} />
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-sm">No fulfilled orders.</p>
+                    )}
+                  </div>
+                </Panel>
+              );
+            })}
+          </Collapse>
         ) : (
+          // ---------- Old Table View ----------
           filteredClients.map((client, idx) => {
             const clientData = clients[client];
             if (!clientData) return null;
@@ -240,11 +332,14 @@ const Home = () => {
             return (
               <div key={idx} className="bg-gray-800 p-6 rounded-xl shadow-lg">
                 <h3 className="text-lg font-semibold mb-1">{client}</h3>
-                <p className="text-gray-400 text-sm mb-4">📍 {clientData.city || "Unknown"}</p>
+                <p className="text-gray-400 text-sm mb-4">
+                  📍 {clientData.city || "Unknown"}
+                </p>
 
                 <div className="mb-6">
                   <h4 className="w-fit text-gray-800 px-2 font-medium mb-2 bg-yellow-500 rounded-full flex items-center">
-                    <ClockCircleOutlined className="text-gray-800 mr-2" /> Pending Orders
+                    <ClockCircleOutlined className="text-gray-800 mr-2" /> Pending
+                    Orders
                   </h4>
                   {clientData.pending.length > 0 ? (
                     <div className="overflow-x-auto">
@@ -252,7 +347,10 @@ const Home = () => {
                         <thead>
                           <tr>
                             {orderFields.map((f, i) => (
-                              <th key={i} className="px-6 py-3 text-gray-400 uppercase text-sm">
+                              <th
+                                key={i}
+                                className="px-6 py-3 text-gray-400 uppercase text-sm"
+                              >
                                 {f.label}
                               </th>
                             ))}
@@ -278,7 +376,8 @@ const Home = () => {
 
                 <div>
                   <h4 className="w-fit text-gray-800 font-medium mb-2 bg-green-500 px-2 rounded-full flex items-center">
-                    <CheckCircleOutlined className="text-gray-800 mr-2" /> Fulfilled Orders
+                    <CheckCircleOutlined className="text-gray-800 mr-2" /> Fulfilled
+                    Orders
                   </h4>
                   {clientData?.fulfilled.length > 0 ? (
                     <div className="overflow-x-auto">
@@ -286,14 +385,17 @@ const Home = () => {
                         <thead>
                           <tr>
                             {orderFields?.map((f, i) => (
-                              <th key={i} className="px-6 py-3 text-gray-400 uppercase text-sm">
+                              <th
+                                key={i}
+                                className="px-6 py-3 text-gray-400 uppercase text-sm"
+                              >
                                 {f.label}
                               </th>
                             ))}
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-700">
-                          {clientData?.fulfilled.map((o, i) => ( 
+                          {clientData?.fulfilled.map((o, i) => (
                             <tr key={i} className="hover:bg-gray-700">
                               {orderFields.map((f, j) => (
                                 <td key={j} className="px-6 py-3">
@@ -304,7 +406,6 @@ const Home = () => {
                           ))}
                         </tbody>
                       </table>
-
                     </div>
                   ) : (
                     <p className="text-gray-500 text-sm">No fulfilled orders.</p>
@@ -315,6 +416,7 @@ const Home = () => {
           })
         )}
       </div>
+
     </div>
   );
 };
