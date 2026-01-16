@@ -20,3 +20,37 @@ code {
 .ant-input-password input::placeholder {
   color: #4b5563; /* Tailwind's gray-600 */
 }
+
+/* Normal */
+.ant-input-outlined {
+  background-color: #0B1220 !important;
+  border-color: #1f242e !important;
+  color: white !important;
+}
+
+/* Hover */
+.ant-input-outlined:hover {
+  background-color: #0B1220 !important;
+  border-color: #2563eb !important; /* thoda blue hint */
+}
+
+/* Focus */
+.ant-input-outlined:focus,
+.ant-input-outlined-focused,
+.ant-input-affix-wrapper-focused {
+  background-color: #0B1220 !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.5) !important;
+  color: white !important;
+}
+
+/* Placeholder */
+.ant-input::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Number input arrows fix */
+.ant-input-number-input {
+  background-color: #0B1220 !important;
+  color: white !important;
+}

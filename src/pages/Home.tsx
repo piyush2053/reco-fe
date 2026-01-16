@@ -117,7 +117,7 @@ const Home = () => {
 
           </>
         ) : (
-          <p className="text-green-400 font-semibold">All settled 🎉</p>
+          <p className="text-green-400 font-semibold">All settled</p>
         )}
 
       </div>
@@ -200,7 +200,7 @@ const Home = () => {
               onChange={e => setDesc(e.target.value)}
             />
             <Button
-              danger
+              type="primary"
               block
               onClick={addExpense}
             >
@@ -214,6 +214,7 @@ const Home = () => {
       <Button
         className="mt-5"
         block
+        type="primary"
         onClick={() =>
           window.open("http://localhost:3001/statement", "_blank")
         }
