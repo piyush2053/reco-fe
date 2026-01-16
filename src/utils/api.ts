@@ -1,18 +1,16 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://latik-be.vercel.app";
+const isProd = false;
 
-export const core_services = {
-  getExcelDataToday: async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/getExcelDatatoday`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return response.data;
-    } catch (error: any) {
-      throw error.response?.data || error.message;
-    }
+const API_BASE_URL = isProd
+  ? "https://latik-be.vercel.app"   // PROD
+  : "http://localhost:3001";       // LOCAL
+
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
   },
-};
+});
+
+export default api;
