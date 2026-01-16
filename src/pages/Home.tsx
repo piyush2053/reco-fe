@@ -22,16 +22,10 @@ const StatCard = ({
     <p className="font-bold">{value}</p>
   </div>
 );
-
-const Tab = ({
-  children,
-  active,
-  onClick,
-}: {
-  children: React.ReactNode;
+const Tab: React.FC<{
   active: boolean;
   onClick: () => void;
-}) => (
+}> = ({ children, active, onClick }) => (
   <button
     onClick={onClick}
     className={`flex-1 py-2 text-sm ${active
