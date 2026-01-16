@@ -3,6 +3,46 @@ import api from "../utils/api";
 import { Button, Input, Select, Popover } from "antd";
 import React from 'react'
 
+/* ---------- Small Components ---------- */
+
+const StatCard = ({
+  title,
+  value,
+  active,
+}: {
+  title: string;
+  value: string;
+  active?: boolean;
+}) => (
+  <div
+    className={`rounded-xl p-3 text-center ${active ? "bg-blue-600" : "bg-[#121A2F]"
+      }`}
+  >
+    <p className="text-xs opacity-70">{title}</p>
+    <p className="font-bold">{value}</p>
+  </div>
+);
+
+const Tab = ({
+  children,
+  active,
+  onClick,
+}: {
+  children: React.ReactNode;
+  active: boolean;
+  onClick: () => void;
+}) => (
+  <button
+    onClick={onClick}
+    className={`flex-1 py-2 text-sm ${active
+      ? "bg-blue-600 text-white"
+      : "text-gray-400"
+      }`}
+  >
+    {children}
+  </button>
+);
+
 const Home = () => {
   const [wallet, setWallet] = useState<any>(null);
   const [amount, setAmount] = useState<number>(0);
@@ -226,43 +266,3 @@ const Home = () => {
 };
 
 export default Home;
-
-/* ---------- Small Components ---------- */
-
-const StatCard = ({
-  title,
-  value,
-  active,
-}: {
-  title: string;
-  value: string;
-  active?: boolean;
-}) => (
-  <div
-    className={`rounded-xl p-3 text-center ${active ? "bg-blue-600" : "bg-[#121A2F]"
-      }`}
-  >
-    <p className="text-xs opacity-70">{title}</p>
-    <p className="font-bold">{value}</p>
-  </div>
-);
-
-const Tab = ({
-  children,
-  active,
-  onClick,
-}: {
-  children: React.ReactNode;
-  active: boolean;
-  onClick: () => void;
-}) => (
-  <button
-    onClick={onClick}
-    className={`flex-1 py-2 text-sm ${active
-      ? "bg-blue-600 text-white"
-      : "text-gray-400"
-      }`}
-  >
-    {children}
-  </button>
-);
