@@ -216,7 +216,7 @@ const Home = () => {
         block
         type="primary"
         onClick={() =>
-          window.open("http://localhost:3001/statement", "_blank")
+          window.open("https://latik-be.vercel.app/statement", "_blank")
         }
       >
         View Account Statement
